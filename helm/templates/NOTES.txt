@@ -1,0 +1,31 @@
+TaskFlow has been deployed to namespace {{ .Release.Namespace }}!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Access the API
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{{- if .Values.ingress.enabled }}
+  {{- range .Values.ingress.hosts }}
+  URL: http{{ if $.Values.ingress.tls }}s{{ end }}://{{ .host }}
+  {{- end }}
+{{- else }}
+  Run the following to forward the port locally:
+
+  export POD=$(kubectl get pods -n {{ .Release.Namespace }} \
+    -l "app.kubernetes.io/name={{ include "taskflow.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" \
+    -o jsonpath="{.items[0].metadata.name}")
+
+  kubectl port-forward -n {{ .Release.Namespace }} $POD 8080:8080
+  # API is now available at http://localhost:8080
+{{- end }}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Health check
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  curl http://<HOST>/actuator/health
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Useful kubectl commands
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  kubectl get pods -n {{ .Release.Namespace }}
+  kubectl logs -f -l app.kubernetes.io/name={{ include "taskflow.name" . }} -n {{ .Release.Namespace }}
+  kubectl describe ingress {{ include "taskflow.fullname" . }} -n {{ .Release.Namespace }}

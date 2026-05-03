@@ -1,0 +1,113 @@
+# ─────────────────────────────────────────
+# Replica count — overridden by HPA when autoscaling.enabled=true
+# ─────────────────────────────────────────
+replicaCount: 1
+
+# ─────────────────────────────────────────
+# Container image — set repository and tag in CI or values-prod.yaml
+# ─────────────────────────────────────────
+image:
+  repository: ""  # e.g. 123456789012.dkr.ecr.us-east-1.amazonaws.com/taskflow
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+# ─────────────────────────────────────────
+# Kubernetes ServiceAccount
+# ─────────────────────────────────────────
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+# ─────────────────────────────────────────
+# Service — ClusterIP so only the ALB Ingress reaches the app
+# ─────────────────────────────────────────
+service:
+  type: ClusterIP
+  port: 8080
+
+# ─────────────────────────────────────────
+# Ingress — AWS ALB Ingress Controller
+# Requires aws-load-balancer-controller installed on the cluster.
+# ─────────────────────────────────────────
+ingress:
+  enabled: true
+  className: "alb"
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30"
+    alb.ingress.kubernetes.io/healthy-threshold-count: "2"
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: "3"
+  hosts:
+    - host: ""  # Set this to your domain e.g. api.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  # tls:
+  #   - secretName: taskflow-tls
+  #     hosts:
+  #       - api.example.com
+
+# ─────────────────────────────────────────
+# Resource requests and limits
+# ─────────────────────────────────────────
+resources:
+  limits:
+    cpu: 500m
+    memory: 384Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+# ─────────────────────────────────────────
+# Horizontal Pod Autoscaler
+# ─────────────────────────────────────────
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# ─────────────────────────────────────────
+# Non-sensitive environment variables (go into ConfigMap)
+# ─────────────────────────────────────────
+env:
+  SPRING_PROFILES_ACTIVE: "prod"
+
+# ─────────────────────────────────────────
+# Sensitive values (go into Kubernetes Secret)
+# NEVER commit real values here — override via CI/CD --set flags.
+# In production use AWS Secrets Manager + External Secrets Operator instead.
+# ─────────────────────────────────────────
+secrets:
+  jwtSecret: "change-me-in-ci"
+  # Must point to the Bitnami subchart service: <release-name>-postgresql
+  datasourceUrl: "jdbc:postgresql://taskflow-postgresql:5432/taskflow"
+  datasourceUsername: "taskflow"
+  datasourcePassword: "change-me-in-ci"
+
+# ─────────────────────────────────────────
+# Bitnami PostgreSQL subchart
+# Disable (postgresql.enabled=false) if using RDS instead.
+# ─────────────────────────────────────────
+postgresql:
+  enabled: true
+  auth:
+    database: taskflow
+    username: taskflow
+    password: "change-me-in-ci"  # Override in CI — must match secrets.datasourcePassword
+  primary:
+    persistence:
+      enabled: true
+      size: 5Gi
+    resources:
+      limits:
+        cpu: 300m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi

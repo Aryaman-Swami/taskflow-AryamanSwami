@@ -1,0 +1,15 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: taskflow-cluster
+  region: ap-south-1
+  version: "1.30"
+
+managedNodeGroups:
+  - name: taskflow-nodes
+    instanceType: t3.micro
+    minSize: 1
+    desiredCapacity: 2
+    maxSize: 4
+    availabilityZones: ["ap-south-1a", "ap-south-1b"]
