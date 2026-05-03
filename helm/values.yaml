@@ -23,7 +23,7 @@ serviceAccount:
 # Service — ClusterIP so only the ALB Ingress reaches the app
 # ─────────────────────────────────────────
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 8080
 
 # ─────────────────────────────────────────
