@@ -1,0 +1,20 @@
+# PostgreSQL Configuration
+POSTGRES_DB=taskflow
+POSTGRES_USER=taskflow
+POSTGRES_PASSWORD=taskflow
+POSTGRES_PORT=5432
+
+# Spring Boot Application Configuration
+SPRING_PROFILES_ACTIVE=default
+JWT_SECRET=change-this-to-a-very-secure-secret-key-that-is-at-least-256-bits-long-for-production-use
+
+# Database Connection for Spring Boot
+SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/taskflow
+SPRING_DATASOURCE_USERNAME=taskflow
+SPRING_DATASOURCE_PASSWORD=taskflow
+
+# API Server Port
+API_PORT=8080
+
+# React App Port (if applicable)
+REACT_APP_PORT=3000
