@@ -59,8 +59,8 @@ resources:
     cpu: 500m
     memory: 384Mi
   requests:
-    cpu: 100m
-    memory: 256Mi
+    cpu: 50m
+    memory: 128Mi
 
 # ─────────────────────────────────────────
 # Horizontal Pod Autoscaler
