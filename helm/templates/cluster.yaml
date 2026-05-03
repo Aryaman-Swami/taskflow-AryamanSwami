@@ -2,7 +2,7 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: taskflow-cluster-v1
+  name: taskflow-cluster
   region: ap-south-1       # Mumbai region (closest to Nashik)
   version: "1.30"
 
