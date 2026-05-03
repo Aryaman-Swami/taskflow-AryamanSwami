@@ -12,10 +12,7 @@ spec:
     matchLabels:
       {{- include "taskflow.selectorLabels" . | nindent 6 }}
   strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1        # Spin up one extra pod before killing old ones
-      maxUnavailable: 0  # Never reduce below desired replica count during rollout
+    type: Recreate  # Kill old pod first, then start new — required with single replica on limited nodes
   template:
     metadata:
       annotations:
