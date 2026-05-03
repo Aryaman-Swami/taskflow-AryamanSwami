@@ -1,7 +1,7 @@
 # Production overrides — merged on top of values.yaml during deploy.
 # image.tag and secrets are set via --set flags in CI, not stored here.
 
-replicaCount: 3
+replicaCount: 1
 
 image:
   # Replace with your actual ECR URI
