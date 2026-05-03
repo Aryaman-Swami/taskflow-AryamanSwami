@@ -95,7 +95,7 @@ secrets:
 # Disable (postgresql.enabled=false) if using RDS instead.
 # ─────────────────────────────────────────
 postgresql:
-  enabled: true
+  enabled: false
   auth:
     database: taskflow
     username: taskflow

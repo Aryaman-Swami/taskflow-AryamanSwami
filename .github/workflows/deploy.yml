@@ -109,6 +109,5 @@ jobs:
             --set secrets.jwtSecret="${{ secrets.JWT_SECRET }}" \
             --set secrets.datasourcePassword="${{ secrets.DB_PASSWORD }}" \
             --set secrets.datasourceUsername="taskflow" \
-            --set "secrets.datasourceUrl=jdbc:postgresql://${{ env.HELM_RELEASE }}-postgresql:5432/taskflow" \
-            --set postgresql.auth.password="${{ secrets.DB_PASSWORD }}" \
+            --set "secrets.datasourceUrl=jdbc:postgresql://${{ secrets.RDS_ENDPOINT }}:5432/taskflow" \
             --timeout 15m0s
